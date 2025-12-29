@@ -6,6 +6,7 @@ import (
 	"log"
 	"math"
 	"net/http"
+	"os"
 )
 
 type Asset struct {
@@ -53,8 +54,13 @@ func main() {
 	http.HandleFunc("/config/assets", corsMiddleware(configHandler))
 	http.HandleFunc("/margin/validate", corsMiddleware(validateHandler))
 
-	fmt.Println("Server starting on port 8080...")
-	log.Fatal(http.ListenAndServe(":8080", nil))
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8080"
+	}
+
+	fmt.Printf("Server starting on port %s...\n", port)
+	log.Fatal(http.ListenAndServe(":"+port, nil))
 }
 
 // corsMiddleware handles CORS headers
